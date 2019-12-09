@@ -1,22 +1,14 @@
 package com.example.testretrofit
 
 
+import android.app.ProgressDialog
 import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import com.example.testretrofit.databinding.FragmentTitleBinding
-import com.example.testretrofit.databinding.RowLayoutBinding
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_title.*
-import kotlinx.android.synthetic.main.row_layout.*
 import org.json.JSONArray
 import java.net.HttpURLConnection
 import java.net.URL
@@ -37,10 +29,6 @@ class title : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_title, container, false)
-//        val binding = DataBindingUtil.inflate<RowLayoutBinding>(inflater,
-//            R.layout.fragment_title,container,false)
-
-//
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,23 +62,7 @@ class title : Fragment() {
                 list.add(
                     MyData(
                         jsonObject.getString("login"),
-                        jsonObject.getInt("id"),
-                        jsonObject.getString("node_id"),
-                        jsonObject.getString("avatar_url"),
-                        jsonObject.getString("gravatar_id"),
-                        jsonObject.getString("url"),
-                        jsonObject.getString("html_url"),
-                        jsonObject.getString("followers_url"),
-                        jsonObject.getString("following_url"),
-                        jsonObject.getString("gists_url"),
-                        jsonObject.getString("starred_url"),
-                        jsonObject.getString("subscriptions_url"),
-                        jsonObject.getString("organizations_url"),
-                        jsonObject.getString("repos_url"),
-                        jsonObject.getString("events_url"),
-                        jsonObject.getString("received_events_url"),
-                        jsonObject.getString("type"),
-                        jsonObject.getString("site_admin")
+                        jsonObject.getString("avatar_url")
                     )
                 )
                 i++

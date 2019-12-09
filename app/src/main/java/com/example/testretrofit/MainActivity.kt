@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         getSupportActionBar()?.setTitle("Github user");
-
+        getActionBar()?.setDisplayHomeAsUpEnabled(true);
     }
 
 }
