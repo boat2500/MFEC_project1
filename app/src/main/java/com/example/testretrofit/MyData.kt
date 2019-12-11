@@ -1,5 +1,14 @@
 package com.example.testretrofit
 
-data class MyData(val login:String,val avatar_url:String){
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
-}
+
+data class MyData (
+    @SerializedName("login")
+    @Expose
+    var login: String? = null,
+    @SerializedName("avatar_url")
+    @Expose
+    var avatarUrl: String? = null
+)

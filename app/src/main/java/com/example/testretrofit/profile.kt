@@ -46,7 +46,6 @@ class profile : Fragment() {
         var userLogin = view?.findViewById<TextView>(R.id.textView2)
         user = arguments?.getString("user_name_bundle").toString()
         userLogin?.setText("@"+arguments?.getString("user_name_bundle").toString())
-
         NetworkConnectionManager().callServer(
             networkCallbackListener,
             user
@@ -62,6 +61,7 @@ class profile : Fragment() {
             var M = ""+user?.bio+"\n"+user?.location+"\n"+user?.html_url
             //textView3.setText(user?.followersUrl)
             textView5.setText(M)
+            textView3.setText(user?.followersUrl)
         }
 
         override fun onBodyError(responseBodyError: ResponseBody?) { //404 (error not null)

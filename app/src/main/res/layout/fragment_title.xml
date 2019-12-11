@@ -15,7 +15,6 @@
 
         tools:context=".title">
 
-        <!-- TODO: Update blank fragment layout -->
         <ListView
             android:id="@+id/mylist"
             android:layout_width="match_parent"

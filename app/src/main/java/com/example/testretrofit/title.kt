@@ -1,75 +1,72 @@
 package com.example.testretrofit
 
 
-import android.app.ProgressDialog
-import android.os.AsyncTask
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_title.*
-import org.json.JSONArray
-import java.net.HttpURLConnection
-import java.net.URL
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
 
-
-
-/**
- * A simple [Fragment] subclass.
- */
 class title : Fragment() {
-
-    val list=ArrayList<MyData>()
-    val adapter=ListAdapter(this,list)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_title, container, false)
     }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val url ="https://api.github.com/users"
-        AsyncTaskHandler().execute(url)
+interface GitHubService {
+    @GET("/users?since=0")
+    open fun getUser(): Call<List<MyData?>>?
+}
+    interface OnNetworkCallbackListener {
+        fun onResponse(user: List<MyData?>?, retrofit: Retrofit?)
+        fun onFailure(t: Throwable?)
     }
 
-    inner class AsyncTaskHandler: AsyncTask<String, String, String>(){
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        callServer(
+            networkCallbackListener
+        )
+    }
+    var networkCallbackListener: OnNetworkCallbackListener = object : OnNetworkCallbackListener {
+        override fun onResponse(user: List<MyData?>?, retrofit: Retrofit?) {
+            mylist.adapter = ListAdapter(title(), user as List<MyData>)
+        }
+        override fun onFailure(t: Throwable?) { //fail any course
+        }
+    }
+    fun callServer(listener: title.OnNetworkCallbackListener?) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.github.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val git = retrofit.create(title.GitHubService::class.java)
+        val call = git.getUser()
+        call?.enqueue(object : Callback<List<MyData?>> {
+            fun onResponse(response: Response <List<MyData?>>?, retrofit: Retrofit?) {}
+            fun onFailure(t: Throwable?) {}
 
-        override fun doInBackground(vararg url: String?): String {
-            val res:String
-            val connection= URL(url[0]).openConnection()as HttpURLConnection
-            try{
-                connection.connect()
-                res=connection.inputStream.use { it.reader().use { reader->reader.readText() } }
-            }finally {
-                connection.disconnect()
+            override fun onResponse(call: Call<List<MyData?>>, response: Response<List<MyData?>>) {
+                val user: List<MyData?>? = response.body()
+
+                if (user != null) {
+                    listener!!.onResponse(user, retrofit)
+                }
             }
-            return res
-        }
-
-        override fun onPostExecute(result: String?) {
-            super.onPostExecute(result)
-            jsonResult(result)
-        }
-        private fun jsonResult(jsonString:String?){
-            val jsonArray= JSONArray(jsonString)
-            var i=0
-            while (i<jsonArray.length()){
-                val jsonObject=jsonArray.getJSONObject(i)
-                list.add(
-                    MyData(
-                        jsonObject.getString("login"),
-                        jsonObject.getString("avatar_url")
-                    )
-                )
-                i++
+            override fun onFailure(call: Call<List<MyData?>>, t: Throwable) {
+                listener?.onFailure(t)
             }
-
-            mylist.adapter=adapter
-        }
+        })
     }
 }
 
