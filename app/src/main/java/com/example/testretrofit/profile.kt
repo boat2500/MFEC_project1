@@ -61,7 +61,7 @@ class profile : Fragment() {
             var M = ""+user?.bio+"\n"+user?.location+"\n"+user?.html_url
             //textView3.setText(user?.followersUrl)
             textView5.setText(M)
-            textView3.setText(user?.followersUrl)
+            //textView3.setText(user?.followersUrl)
         }
 
         override fun onBodyError(responseBodyError: ResponseBody?) { //404 (error not null)
